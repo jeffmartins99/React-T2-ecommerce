@@ -4,6 +4,7 @@ import dash2 from './dashboard_full_2.png';
 import dash3 from './dashboard_full_3.png';
 import './App.css';
 import './bootstrap.css';
+import { thisExpression } from '@babel/types';
 
 function App() {
   return (<Site/>);
@@ -22,6 +23,10 @@ class Site extends React.Component{
     return (<Conteudo/>)
   }
 
+  renderCarrinho(){
+    return (<Carrinho/>)
+  }
+
   renderRodape(){
     return (<Rodape/>)
   }
@@ -32,6 +37,7 @@ class Site extends React.Component{
         <div><this.renderNav/></div>
         <div><this.renderBanner/></div>
         <div><this.renderConteudo/></div>
+        
         <div><this.renderRodape/></div>
       </div>
     )
@@ -111,25 +117,27 @@ class Planos extends React.Component{
       taxa: props.taxa,
       largura: props.largura,
       armaz: props.armaz,
-      exced: props.exced
+      exced: props.exced,
+      status: props.status
     };
+    this.renderHtml = this.renderHtml.bind(this)
   }
 
   mudaTela = () => {
-    if(this.props.id == 1){
+    if(this.props.status == 0){
       this.setState({
-        tipo: "teste de mudança"
+        status: 1,
+        tipo: "teste de botão"
       });
+      return <this.renderHtml2/>
     }
     else{
-      this.setState({
-        tipo: "Outro Teste"
-      });
+       return <this.renderHtml/>
     }
     
   }
 
-  render(){
+  renderHtml(){
     return(
       <div class="col-md-3 ftco-animate0">
         <div class="block-7">
@@ -151,6 +159,27 @@ class Planos extends React.Component{
       </div>
     );
   }
+
+  renderHtml2(){
+    return(
+      <section class="ftco-section bg-secondary">
+        <div class="container">
+          <div class="row justify-content-center mb-5 pb-5">
+            <div class="col-md-7 text-center heading-section ftco-animate0">
+              <h2 class="mb-4">Carrinho</h2>
+            </div>
+          </div>
+            <div class="row">
+              <h1>Comprar</h1>
+            </div>
+        </div>
+      </section>
+    );
+  }
+
+  render(){
+    return <this.renderHtml/>
+  }
 }
 
 function Section(){
@@ -164,14 +193,33 @@ function Section(){
           </div>
         </div>
     		  <div class="row">
-            <Planos id="1" tipo="Gratis" taxa="0" largura="50" armaz="100" exced="20"/>
-            <Planos id="2" tipo="Basico" taxa="19" largura="150" armaz="200" exced="5"/>
-            <Planos id="3" tipo="Premium" taxa="49" largura="250" armaz="300" exced="2"/>
-            <Planos id="4" tipo="Pro" taxa="99" largura="450" armaz="400" exced="1"/>
+            <Planos id="1" tipo="Gratis" taxa="0" largura="50" armaz="100" exced="20" status="0"/>
+            <Planos id="2" tipo="Basico" taxa="19" largura="150" armaz="200" exced="5" status="0"/>
+            <Planos id="3" tipo="Premium" taxa="49" largura="250" armaz="300" exced="2" status="0"/>
+            <Planos id="4" tipo="Pro" taxa="99" largura="450" armaz="400" exced="1" status="0"/>
           </div>
     	</div>
     </section>
   );
+}
+
+class Carrinho extends React.Component{
+  render(){
+    return(
+      <section class="ftco-section bg-secondary">
+        <div class="container">
+          <div class="row justify-content-center mb-5 pb-5">
+            <div class="col-md-7 text-center heading-section ftco-animate0">
+              <h2 class="mb-4">Carrinho</h2>
+            </div>
+          </div>
+            <div class="row">
+              <h1>Comprar</h1>
+            </div>
+        </div>
+      </section>
+    );
+  }
 }
 
 function Rodape(){
