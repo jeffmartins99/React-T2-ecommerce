@@ -4,12 +4,14 @@ import dash2 from './dashboard_full_2.png';
 import dash3 from './dashboard_full_3.png';
 import './App.css';
 import './bootstrap.css';
+import { thisExpression } from '@babel/types';
 
 function App() {
   return (<Site/>);
 }
 
-class Site extends React.Component{
+class Site extends React.Component{
+
   renderNav(){
     return (<Nav/>)
   }
@@ -22,6 +24,12 @@ class Site extends React.Component{
     return (<Conteudo/>)
   }
 
+  renderCarrinho(){
+    return(
+      <Carrinho/>
+    );
+  }
+
   renderRodape(){
     return (<Rodape/>)
   }
@@ -32,13 +40,15 @@ class Site extends React.Component{
         <div><this.renderNav/></div>
         <div><this.renderBanner/></div>
         <div><this.renderConteudo/></div>
+        <div><this.renderCarrinho/></div>
         <div><this.renderRodape/></div>
       </div>
     )
   }
 }
 
-class Conteudo extends React.Component{
+class Conteudo extends React.Component{
+
   renderSection(){
     return (
       <Section/>
@@ -102,7 +112,7 @@ function Banner(){
   );
 }
 
-class Planos extends React.Component{
+class Planos extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
@@ -111,26 +121,46 @@ class Planos extends React.Component{
       taxa: props.taxa,
       largura: props.largura,
       armaz: props.armaz,
-      exced: props.exced
+      exced: props.exced,
+      status: props.status,
+      qtd: props.qtd
     };
+    this.renderProdutos = this.renderProdutos.bind(this)
   }
 
   mudaTela = () => {
-    if(this.props.id == 1){
-      this.setState({
-        tipo: "teste de mudança"
-      });
-    }
-    else{
-      this.setState({
-        tipo: "Outro Teste"
-      });
-    }
-    
+    let cont;
+    this.setState({
+      status: 0,
+      qtd: 1
+    });  
+  }
+
+  renderProdutos(){
+    return(
+      
+      <div class="block-7" key={this.state.id}>
+        <div class="text-center">
+          <h2 class="heading">{this.state.tipo}</h2>
+          <span class="price"><sup>R$</sup> <span class="number">{this.state.taxa}</span></span>
+          <span class="excerpt d-block">Todos recursos estão inclusos</span>
+          <button class="btn btn-success" onClick={this.mudaTela}>Adquirir</button>
+          <h3 class="heading-2 mb-3">Aproveite todos os recursos</h3>
+          
+          <ul class="pricing-text">
+            <li><strong>{this.state.largura}GB</strong> Largura de banda</li>
+            <li><strong>{this.state.armaz}GB</strong> Armazenamento</li>
+            <li><strong>${this.state.exced}.00 / GB</strong> Excedentes</li>
+            <li>Todos os recursos</li>
+          </ul>
+        </div>
+      </div>
+      
+    );
   }
 
   render(){
-    return(
+    return (
       <div class="col-md-3 ftco-animate0">
         <div class="block-7">
           <div class="text-center">
@@ -147,31 +177,106 @@ class Planos extends React.Component{
               <li>Todos os recursos</li>
             </ul>
           </div>
+            {
+              this.state.status == 1 ?//fazendo um if
+                <div>
+                  {/* Faz nada */}
+                </div>
+              ://fazendo um else
+                <div class="text-center">
+                  <h2 class="heading" >Adquirido</h2>
+                </div>
+            }
         </div>
+        
       </div>
     );
   }
 }
 
-function Section(){
-  return (
-    <section class="ftco-section bg-light">
-    	<div class="container">
-    		<div class="row justify-content-center mb-5 pb-5">
-          <div class="col-md-7 text-center heading-section ftco-animate0">
-            <span class="subheading">Preços dos Planos</span>
-            <h2 class="mb-4">Nosso Melhor Preço</h2>
+const arrObj = [
+  {id:"1", tipo:"Gratis", taxa:"0", largura:"50", armaz:"100", exced:"20", qtd:"0", status:"1"},
+  {id:"2", tipo:"Basico", taxa:"19", largura:"150", armaz:"200", exced:"5", qtd:"0", status:"1"},
+  {id:"3", tipo:"Premium", taxa:"49", largura:"250", armaz:"300", exced:"2", qtd:"0", status:"1"},
+  {id:"4", tipo:"Pro", taxa:"99", largura:"450", armaz:"400", exced:"1", qtd:"0", status:"1"},
+]
+
+class Section extends React.Component{
+  constructor(props) {
+    super(props);
+    this.state = {
+      arrObj
+    };
+  }
+  render()
+  {
+    return (
+      <section class="ftco-section bg-light">
+        <div class="container">
+          <div class="row justify-content-center mb-5 pb-5">
+            <div class="col-md-7 text-center heading-section ftco-animate0">
+              <span class="subheading">Preços dos Planos</span>
+              <h2 class="mb-4">Nosso Melhor Preço</h2>
+            </div>
+          </div>
+            <div class="row">
+              {this.state.arrObj.map((item)=>{
+                return(
+                  <Planos id={item.id} tipo={item.tipo} taxa={item.taxa} largura={item.largura} armaz={item.armaz} exced={item.exced} status={item.status}/>
+                );
+              })}
+            </div>
+        </div>
+      </section>
+    );
+  }
+}
+
+class Carrinho extends React.Component{
+  constructor(props) {
+    super(props);
+    this.state = {
+      arrObj
+    };
+  }
+  render(){
+    return(
+      <section class="ftco-section bg-secondary">
+        <div class="container">
+        <div class="quadrado">
+          <div class="card bg-light mb-3">
+            <div class="card-header heading">Carrinhos de Compras</div>
+              {
+                this.state.arrObj.map((item)=>{
+                  return (
+                    <div>
+                      {
+                        item.status == 0 ? 
+                          <div>
+                            <div class="card-body">
+                              <h5 class="card-title">{item.tipo}</h5>
+                              <label>{item.tipo} </label><label class="direita"> {item.qtd}Tempo / {item.taxa} </label>
+                              <p class="card-text branco">Tipo Plano / Tempo / Valor / Remover / fjkhgfjhgfgsgfdsgfdsmghgfdhgfdgh</p>
+                            </div>
+                            <div class="card-footer">
+                              <small class="text-muted">Total  </small><small class="direita">{item.taxa}</small>
+                            </div>
+                          </div> 
+                        : 
+                          <div>
+                            
+                          </div> 
+                      }
+                    </div>
+                  );
+                })
+              }
           </div>
         </div>
-    		  <div class="row">
-            <Planos id="1" tipo="Gratis" taxa="0" largura="50" armaz="100" exced="20"/>
-            <Planos id="2" tipo="Basico" taxa="19" largura="150" armaz="200" exced="5"/>
-            <Planos id="3" tipo="Premium" taxa="49" largura="250" armaz="300" exced="2"/>
-            <Planos id="4" tipo="Pro" taxa="99" largura="450" armaz="400" exced="1"/>
-          </div>
-    	</div>
-    </section>
-  );
+        </div>
+      </section>
+    );
+  }
 }
 
 function Rodape(){
