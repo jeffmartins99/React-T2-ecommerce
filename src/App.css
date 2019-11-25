@@ -8633,7 +8633,11 @@ textarea.form-control {
 }
 
 .direita{
-  float: right;
+  display: flex;
+  flex-direction: row;
+  justify-content: right;
+  align-items: right;
+  align-content: right;
 }
 
 .block-27 ul {
